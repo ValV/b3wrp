@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='boto3wrapper',
-    version='0.1.1a',
-    packages=['boto3wrapper'],
+    name='b3w',
+    version='0.1.2',
+    packages=['b3w'],
     url='',
     license='',
     author='serbeh',
