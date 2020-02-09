@@ -29,9 +29,9 @@ class B3W(object):
     def bucket_name(self, value: str):
         self.__bucket_name = value
 
-    def list_objects(self, prefix=None) -> List[str]:
+    def ls(self, prefix=None) -> List[str]:
         """
-        List over objects in bucket
+        List over objects in the bucket.
         :param prefix: Optional param to set `base directory`
         :return: List
         """
@@ -42,10 +42,10 @@ class B3W(object):
 
     def get(self, s3_path: str, output_path: str = None) -> None:
         """
-        Get file from s3 bucket.
-
-        :param s3_path:  key in s3 bucket
+        Get a file from s3 bucket.
+        :param s3_path:  key in S3 bucket
         :param output_path:
+        :return: None
         """
         try:
             if not output_path:
@@ -57,8 +57,17 @@ class B3W(object):
                 print("The object does not exist.")
             else:
                 raise
+        return None
 
-    def upload(self, file_path, s3_path, timestamp=False, force=False):
+    def put(self, file_path, s3_path, timestamp=False, force=False) -> None:
+        """
+        Load a file into s3 bucket.
+        :param s3_path:  key in S3 bucket
+        :param file_path:
+        "param timestamp:
+        :param force:
+        :return: None
+        """
         p = pathlib.Path(s3_path)
         if not timestamp and not force:
             if s3_path in self.list_objects(p.parent.as_posix()):
@@ -67,3 +76,4 @@ class B3W(object):
             """add timestamp"""
             s3_path = f'{p.parent if p.parent.as_posix() != "." else ""}{p.stem}_{time.strftime("%Y-%m-%d-%H-%M-%S")}{p.suffix}'
         self.__s3r.Bucket(self.bucket_name).upload_file(file_path, s3_path)
+        return None
