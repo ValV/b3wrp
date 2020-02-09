@@ -6,7 +6,7 @@ import boto3
 import botocore
 
 
-class Boto3Wrapper(object):
+class B3W(object):
     def __init__(self, bucket_name, default_path=None):
         self.__bucket_name = bucket_name
         self.__default_path = default_path if default_path else '.'
