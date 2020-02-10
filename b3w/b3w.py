@@ -5,7 +5,6 @@ from typing import List
 import boto3
 import botocore
 
-
 class B3W(object):
     def __init__(self, bucket_name: str,
                  aws_access_key_id: str = None,
@@ -53,18 +52,18 @@ class B3W(object):
         else:
             return [x.key for x in self.__s3r.Bucket(self.bucket_name).objects.all()]
 
-    def get(self, s3_path: str, output_path: str = None) -> None:
+    def get(self, remote_path: str, local_path: str = None) -> None:
         """
         Get a file from s3 bucket.
-        :param s3_path:  key in S3 bucket
-        :param output_path:
+        :param remote_path:  key in S3 bucket
+        :param local_path:
         :return: None
         """
         try:
-            if not output_path:
-                output_path = f"{self.local_path}/{pathlib.Path(s3_path).name}"
+            if not local_path:
+                local_path = f"{self.local_path}/{pathlib.Path(remote_path).name}"
             self.__s3r.Bucket(self.bucket_name).download_file(
-                s3_path, output_path)
+                remote_path, local_path)
         except botocore.exceptions.ClientError as e:
             if e.response['Error']['Code'] == "404":
                 print("The object does not exist.")
@@ -72,21 +71,21 @@ class B3W(object):
                 raise
         return None
 
-    def put(self, file_path, s3_path, timestamp=False, force=False) -> None:
+    def put(self, local_path, remote_path, timestamp=False, force=False) -> None:
         """
         Load a file into s3 bucket.
-        :param s3_path:  key in S3 bucket
-        :param file_path:
+        :param remote_path:  key in S3 bucket
+        :param local_path:
         "param timestamp:
         :param force:
         :return: None
         """
-        p = pathlib.Path(s3_path)
+        p = pathlib.Path(remote_path)
         if not timestamp and not force:
-            if s3_path in self.list_objects(p.parent.as_posix()):
-                raise Exception(f"File <{s3_path}> already exists")
+            if remote_path in self.list_objects(p.parent.as_posix()):
+                raise Exception(f"Object <{remote_path}> already exists.")
         elif timestamp:
-            """add timestamp"""
-            s3_path = f"{p.parent if p.parent.as_posix() != '.' else ''}{p.stem}_{time.strftime('%Y-%m-%d-%H-%M-%S')}{p.suffix}"
-        self.__s3r.Bucket(self.bucket_name).upload_file(file_path, s3_path)
+            """Add timestamp"""
+            remote_path = f"{p.parent if p.parent.as_posix() != '.' else ''}{p.stem}_{time.strftime('%Y-%m-%d-%H-%M-%S')}{p.suffix}"
+        self.__s3r.Bucket(self.bucket_name).upload_file(local_path, remote_path)
         return None

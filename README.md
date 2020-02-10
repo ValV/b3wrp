@@ -20,13 +20,13 @@ B3W class has only 3 methods:
 
 Signatures:
 ```python
-def get(self, s3_path: str, output_path: str = None) -> None:
-    ...
-
-def put(self, file_path, s3_path, timestamp=False, force=False):
-    ...
-
 def ls(self, prefix=None) -> List[str]:
+    ...
+
+def get(self, remote_path: str, local_path: str = None) -> None:
+    ...
+
+def put(self, local_path, remote_path, timestamp=False, force=False):
     ...
 ```
 
