@@ -82,7 +82,7 @@ class B3W(object):
         """
         p = pathlib.Path(remote_path)
         if not timestamp and not force:
-            if remote_path in self.list_objects(p.parent.as_posix()):
+            if remote_path in self.ls(p.parent.as_posix()):
                 raise Exception(f"Object <{remote_path}> already exists.")
         elif timestamp:
             """Add timestamp"""
