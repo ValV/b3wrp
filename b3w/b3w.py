@@ -8,22 +8,22 @@ import botocore
 
 class B3W(object):
     def __init__(self, bucket_name: str,
-                 default_path: str = None,
+                 local_path: str = None,
                  aws_access_key_id: str = None,
                  aws_secret_access_key: str = None):
         self.__bucket_name = bucket_name
-        self.__default_path = default_path if default_path else '.'
+        self.__local_path = local_path if local_path else '.'
         self.__s3r = boto3.resource('s3', aws_access_key_id=aws_access_key_id,
                                     aws_secret_access_key=aws_secret_access_key)
         self.__s3c = boto3.client('s3')
 
     @property
-    def default_path(self) -> str:
-        return self.__destination_folder
+    def local_path(self) -> str:
+        return self.__local_path
 
-    @default_path.setter
-    def default_path(self, value: str):
-        self.__destination_folder = value
+    @local_path.setter
+    def local_path(self, value: str):
+        self.__local_path = value
 
     @property
     def bucket_name(self) -> str:
@@ -53,7 +53,7 @@ class B3W(object):
         """
         try:
             if not output_path:
-                output_path = f'{self.default_path}/{pathlib.Path(s3_path).name}'
+                output_path = f'{self.local_path}/{pathlib.Path(s3_path).name}'
             self.__s3r.Bucket(self.bucket_name).download_file(
                 s3_path, output_path)
         except botocore.exceptions.ClientError as e:
