@@ -8,14 +8,23 @@ import botocore
 
 class B3W(object):
     def __init__(self, bucket_name: str,
-                 local_path: str = None,
                  aws_access_key_id: str = None,
-                 aws_secret_access_key: str = None):
+                 aws_secret_access_key: str = None,
+                 local_path: str = '.', prefix: str = ''):
         self.__bucket_name = bucket_name
-        self.__local_path = local_path if local_path else '.'
         self.__s3r = boto3.resource('s3', aws_access_key_id=aws_access_key_id,
                                     aws_secret_access_key=aws_secret_access_key)
         self.__s3c = boto3.client('s3')
+        self.__local_path = local_path
+        self.__prefix = prefix
+
+    @property
+    def bucket_name(self) -> str:
+        return self.__bucket_name
+
+    @bucket_name.setter
+    def bucket_name(self, value: str):
+        self.__bucket_name = value
 
     @property
     def local_path(self) -> str:
@@ -26,12 +35,12 @@ class B3W(object):
         self.__local_path = value
 
     @property
-    def bucket_name(self) -> str:
-        return self.__bucket_name
+    def prefix(self) -> str:
+        return self.__prefix
 
-    @bucket_name.setter
-    def bucket_name(self, value: str):
-        self.__bucket_name = value
+    @prefix.setter
+    def prefix(self, value: str):
+        self.__prefix = value
 
     def ls(self, prefix=None) -> List[str]:
         """
