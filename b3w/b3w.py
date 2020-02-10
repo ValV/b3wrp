@@ -39,7 +39,7 @@ class B3W(object):
         :param prefix: Optional param to set `base directory`
         :return: List
         """
-        if prefix and prefix != '.':
+        if prefix and not prefix in ('.', './', './*', '*'):
             return [x.key for x in self.__s3r.Bucket(self.bucket_name).objects.filter(Prefix=prefix)]
         else:
             return [x.key for x in self.__s3r.Bucket(self.bucket_name).objects.all()]
@@ -53,7 +53,7 @@ class B3W(object):
         """
         try:
             if not output_path:
-                output_path = f'{self.local_path}/{pathlib.Path(s3_path).name}'
+                output_path = f"{self.local_path}/{pathlib.Path(s3_path).name}"
             self.__s3r.Bucket(self.bucket_name).download_file(
                 s3_path, output_path)
         except botocore.exceptions.ClientError as e:
@@ -75,9 +75,9 @@ class B3W(object):
         p = pathlib.Path(s3_path)
         if not timestamp and not force:
             if s3_path in self.list_objects(p.parent.as_posix()):
-                raise Exception(f'File <{s3_path}> already exists')
+                raise Exception(f"File <{s3_path}> already exists")
         elif timestamp:
             """add timestamp"""
-            s3_path = f'{p.parent if p.parent.as_posix() != "." else ""}{p.stem}_{time.strftime("%Y-%m-%d-%H-%M-%S")}{p.suffix}'
+            s3_path = f"{p.parent if p.parent.as_posix() != '.' else ''}{p.stem}_{time.strftime('%Y-%m-%d-%H-%M-%S')}{p.suffix}"
         self.__s3r.Bucket(self.bucket_name).upload_file(file_path, s3_path)
         return None
