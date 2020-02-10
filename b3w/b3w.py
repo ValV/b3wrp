@@ -7,11 +7,15 @@ import botocore
 
 
 class B3W(object):
-    def __init__(self, bucket_name, default_path=None):
+    def __init__(self, bucket_name: str,
+                 default_path: str = None,
+                 aws_access_key_id: str = None,
+                 aws_secret_access_key: str = None):
         self.__bucket_name = bucket_name
         self.__default_path = default_path if default_path else '.'
+        self.__s3r = boto3.resource('s3', aws_access_key_id=aws_access_key_id,
+                                    aws_secret_access_key=aws_secret_access_key)
         self.__s3c = boto3.client('s3')
-        self.__s3r = boto3.resource('s3')
 
     @property
     def default_path(self) -> str:
