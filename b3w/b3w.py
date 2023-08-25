@@ -1,5 +1,6 @@
-import pathlib
 import time
+
+from pathlib import Path
 from typing import List
 
 import boto3
@@ -66,7 +67,7 @@ class B3W(object):
         """
         try:
             if not local_path:
-                local_path = f"{self.local_path}/{pathlib.Path(remote_path).name}"
+                local_path = Path(self.__local_path) / Path(remote_path).name
             self.__s3r.Bucket(self.bucket_name).download_file(
                 remote_path, local_path)
         except botocore.exceptions.ClientError as e:
@@ -85,7 +86,7 @@ class B3W(object):
         :param force:
         :return: None
         """
-        p = pathlib.Path(remote_path)
+        p = Path(remote_path)
         if not timestamp and not force:
             if remote_path in self.ls(p.parent.as_posix()):
                 raise Exception(f"Object <{remote_path}> already exists.")
