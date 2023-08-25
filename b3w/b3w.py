@@ -58,7 +58,7 @@ class B3W(object):
         else:
             return [x.key for x in self.__s3r.Bucket(self.bucket_name).objects.all()]
 
-    def get(self, remote_path: str, local_path: str = None) -> None:
+    def get(self, remote_path: str, local_path: str = None, parents: bool = True) -> None:
         """
         Get a file from s3 bucket.
         :param remote_path:  key in S3 bucket
@@ -67,7 +67,8 @@ class B3W(object):
         """
         try:
             if not local_path:
-                local_path = Path(self.__local_path) / Path(remote_path).name
+                local_path = Path(self.__local_path) / (Path(remote_path) if parents else Path(remote_path).name)
+                local_path.parent.mkdir(parents=True, exist_ok=True)
             self.__s3r.Bucket(self.bucket_name).download_file(
                 remote_path, local_path)
         except botocore.exceptions.ClientError as e:
