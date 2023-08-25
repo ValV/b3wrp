@@ -9,7 +9,10 @@ class B3W(object):
     def __init__(self, bucket_name: str,
                  aws_access_key_id: str = None,
                  aws_secret_access_key: str = None,
-                 local_path: str = '.', prefix: str = ''):
+                 local_path: str = '.', prefix: str = '',
+                 profile_name: str = None):
+        if profile_name:
+            boto3.setup_default_session(profile_name=profile_name)
         self.__bucket_name = bucket_name
         self.__s3r = boto3.resource('s3', aws_access_key_id=aws_access_key_id,
                                     aws_secret_access_key=aws_secret_access_key)
