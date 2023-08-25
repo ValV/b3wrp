@@ -51,6 +51,7 @@ class B3W(object):
         :param prefix: Optional param to set `base directory`
         :return: List
         """
+        prefix = self.__prefix if prefix is None else prefix  # use default prefix
         if prefix and not prefix in ('.', './', './*', '*'):
             return [x.key for x in self.__s3r.Bucket(self.bucket_name).objects.filter(Prefix=prefix)]
         else:
