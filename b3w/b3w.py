@@ -10,13 +10,14 @@ class B3W(object):
                  aws_access_key_id: str = None,
                  aws_secret_access_key: str = None,
                  local_path: str = '.', prefix: str = '',
-                 profile_name: str = None):
+                 profile_name: str = None, endpoint_url: str = None):
         if profile_name:
             boto3.setup_default_session(profile_name=profile_name)
         self.__bucket_name = bucket_name
         self.__s3r = boto3.resource('s3', aws_access_key_id=aws_access_key_id,
-                                    aws_secret_access_key=aws_secret_access_key)
-        self.__s3c = boto3.client('s3')
+                                    aws_secret_access_key=aws_secret_access_key,
+                                    endpoint_url=endpoint_url)
+        self.__s3c = boto3.client('s3', endpoint_url=endpoint_url)  # TODO: remove
         self.__local_path = local_path
         self.__prefix = prefix
 
